@@ -1,5 +1,5 @@
 <?php
-
+namespace NatInt\Controllers;
 class IndexController extends ControllerBase
 {
 

@@ -8,10 +8,11 @@ return new \Phalcon\Config(array(
         'host'        => 'localhost',
         'username'    => 'root',
         'password'    => '',
-        'dbname'      => 'test',
+        'dbname'      => 'reliability',
         'charset'     => 'utf8',
     ),
     'application' => array(
+        'servicesDir'    => APP_PATH . '/app/services',
         'controllersDir' => APP_PATH . '/app/controllers/',
         'modelsDir'      => APP_PATH . '/app/models/',
         'migrationsDir'  => APP_PATH . '/app/migrations/',
