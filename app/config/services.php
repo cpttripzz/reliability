@@ -9,7 +9,6 @@ use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\Dispatcher;
-use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
@@ -57,23 +56,12 @@ $di->setShared('view', function () use ($config) {
     return $view;
 });
 
+/**
+ * Dispatcher use a default namespace
+ */
 $di->set('dispatcher', function () {
-
-    $eventsManager = new EventsManager;
-
-    /**
-     * Check if the user is allowed to access certain action using the SecurityPlugin
-     */
-    $eventsManager->attach('dispatch:beforeDispatch', new SecurityPlugin);
-
-    /**
-     * Handle exceptions and not-found exceptions using NotFoundPlugin
-     */
-    $eventsManager->attach('dispatch:beforeException', new NotFoundPlugin);
-
-    $dispatcher = new Dispatcher;
-    $dispatcher->setEventsManager($eventsManager);
-
+    $dispatcher = new Dispatcher();
+    $dispatcher->setDefaultNamespace('NatInt\Controllers');
     return $dispatcher;
 });
 /**

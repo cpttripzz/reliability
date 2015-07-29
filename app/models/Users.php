@@ -1,5 +1,7 @@
 <?php
 
+namespace NatInt\Models;
+
 class Users extends \Phalcon\Mvc\Model
 {
 

@@ -8,7 +8,8 @@ $loader = new \Phalcon\Loader();
 $loader->registerNamespaces(array(
     'NatInt\Models' => $config->application->modelsDir,
     'NatInt\Controllers' => $config->application->controllersDir,
-    'NatInt\Services' => $config->application->servicesDir
+    'NatInt\Services' => $config->application->servicesDir,
+    'NatInt\Plugins' => $config->application->pluginsDir
 ));
 $loader->register();
 //require_once __DIR__ . '/../../vendor/autoload.php';
