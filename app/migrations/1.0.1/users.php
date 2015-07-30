@@ -8,6 +8,7 @@ use Phalcon\Mvc\Model\Migration;
 class UsersMigration_101 extends Migration
 {
 
+
     public function up()
     {
         $this->morphTable(

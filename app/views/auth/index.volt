@@ -1,13 +1,13 @@
-{{ form('auth/login') }}
+<form method='post' action='auth/index'>
     <fieldset>
         <div>
-            <label for="email">Username/Email</label>
+            <label for='username'>Username/Email</label>
             <div>
-                {{ text_field('email') }}
+                {{ text_field('username') }}
             </div>
         </div>
         <div>
-            <label for="password">Password</label>
+            <label for='password'>Password</label>
             <div>
                 {{ password_field('password') }}
             </div>

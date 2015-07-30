@@ -1,29 +1,37 @@
 <?php
 
 namespace NatInt\Controllers;
-use NatInt\Services\AuthService;
-use NatInt\Models\Users;
-class AuthController extends \Phalcon\Mvc\Controller
+
+class AuthController extends ControllerBase
 {
+
     public function indexAction()
     {
         if ($this->request->isPost()) {
-
-            $email = $this->request->getPost('email');
-            $password = $this->request->getPost('password');
-
-            $user = Users::findFirst(array(
-                "(email = :email: OR username = :email:) AND password = :password: AND active = 'Y'",
-                'bind' => array('email' => $email, 'password' => sha1($password))
-            ));
-            if ($user != false) {
-                $this->_registerSession($user);
+            $user =  $this->di->get('authService')->getUserByCredentials($this->request);
+            if ($user !== false) {
+                $this->session->set('auth', array(
+                    'id'    => $user->id,
+                    'username'  => $user->username
+                ));
                 $this->flash->success('Welcome ' . $user->username);
-//            return $this->forward('invoices/index');
+
+                return $this->response->redirect(
+                    array(
+                        "controller" => "user-review-report",
+                        "action" => "index"
+                    )
+                );
             }
 
             $this->flash->error('Wrong email/password');
         }
+
+    }
+
+    public function logoutAction()
+    {
+        $this->session->destroy();
     }
 }
 

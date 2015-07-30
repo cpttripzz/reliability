@@ -7,15 +7,26 @@
  */
 
 namespace NatInt\Services;
-
+use NatInt\Models\Users;
+use Phalcon\Security;
 
 class AuthService {
 
-    public function doUserLogin($email, $password)
+    protected $security;
+    public function __construct(Security $security)
     {
-        $user = Users::findFirst(array(
-            "(email = :email: OR username = :email:) AND password = :password: AND active = 'Y'",
-            'bind' => array('email' => $email, 'password' => sha1($password))
-        ));
+        $this->security = $security;
+    }
+    public function getUserByCredentials($request)
+    {
+        $username = $request->getPost('username');
+        $password = $request->getPost('password');
+        $user = Users::findFirst(array('username' => $username));
+        if($user){
+            if (!$this->security->checkHash($password, $user->password)) {
+                return false;
+            }
+        }
+        return $user;
     }
 }

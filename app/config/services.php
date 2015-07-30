@@ -13,7 +13,7 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
-
+use Phalcon\Events\Manager as EventsManager;
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
  */
@@ -62,8 +62,23 @@ $di->setShared('view', function () use ($config) {
 $di->set('dispatcher', function () {
     $dispatcher = new Dispatcher();
     $dispatcher->setDefaultNamespace('NatInt\Controllers');
+    $eventsManager = new EventsManager;
+
+    /**
+     * Check if the user is allowed to access certain action using the SecurityPlugin
+     */
+    $eventsManager->attach('dispatch:beforeDispatch', new \NatInt\Plugins\SecurityPlugin());
+
+    /**
+     * Handle exceptions and not-found exceptions using NotFoundPlugin
+     */
+//    $eventsManager->attach('dispatch:beforeException', new \NatInt\Plugins\NotFoundPlugin());
+
+    $dispatcher->setEventsManager($eventsManager);
+
     return $dispatcher;
 });
+
 /**
  * Database connection is created based in the parameters defined in the configuration file
  */
@@ -87,3 +102,21 @@ $di->setShared('session', function () {
 
     return $session;
 });
+$di->set('security', array(
+    'className' => 'Phalcon\Security'
+));
+
+$di->set('authService', array(
+    'className' => 'NatInt\Services\AuthService',
+    'arguments' => array(
+        array('type' => 'service', 'name' => 'security')
+    )
+));
+
+$di->set('AuthController', array(
+    'className' => 'NatInt\Controllers\AuthController',
+    'arguments' => array(
+        array('type' => 'service', 'name' => 'authService')
+    )
+));
+
